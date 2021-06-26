@@ -1,33 +1,52 @@
-import React,{useState} from 'react'
-import Input from '../../Presentation/FormItem/Input'
-const Login= props =>{
+import React, { useState} from 'react'
+import { registerUser} from '../../Actions'
+import  {connect, useDispatch} from 'react-redux'
+import {useHistory} from "react-router-dom";
+import { BehaviorSubject } from 'rxjs';
+import HttpInterceptor from "../../Services/HttpInterceptorService";
+import DynamicForm from "../DynamicFormComponent/DynamicFormComponent";
+import {filter} from "rxjs/operators";
+const Login= ({user,dispatch}) =>{
+    let history = useHistory();
+    let dynamicFormOutputCaller = new BehaviorSubject();
+    dynamicFormOutputCaller.pipe(filter(data=>data)).subscribe(async data=>{
+        try{
+        const user=await HttpInterceptor.post("/users",data);
+        await setUserState({
+            userName:user.data.userName,
+            password:user.data.password,
+            lastName:user.data.lastName,
+            firstName:user.data.firstName,
+            address:user.data.address,
+            phoneNumber:user.data.phoneNumber,
+            gender:user.data.gender,
+            DOB:user.data.DOB,
+        })
+        dispatch(registerUser(user.data));
+        history.push('/');
+        }
+        catch (e){
+            history.push('/register');
+        }
+    })
  const [userState,setUserState]=useState({
-     "userName":"",
-     "password":""
+     "userName":user.userName?user.userName:"",
+     "password":user.password?user.password:"",
+     "lastName":user.lastName?user.lastName:"",
+     "firstName":user.firstName?user.firstName:"",
+     "address":user.address?user.address:"",
+     "phoneNumber":user.phoneNumber?user.phoneNumber:"",
+     "gender":user.gender?user.gender:"",
+     "DOB":user.DOB?user.DOB:""
  });
-const onChange=event=>{
-    console.log(userState)
-    if(event.target.name=="userName"){
-        setUserState({
-            userName:event.target.value,
-            password:userState.password
-        })
-    }
-    else{
-        setUserState({
-            userName: userState.userName,
-            password:event.target.value
-        })
-    }
-}
     return (
-        <div>
-<Input type="text" value={userState.userName} onChange={onChange} name="userName"
-title="Please provide Username" />
-<Input type="text" value={userState.password} onChange={onChange} name="password"
-title="Please provide password" />
-</div>
+        <DynamicForm formId={"basic-login"} eventEmitter={dynamicFormOutputCaller} />
     );
 }
 
-export default Login;
+const mapStateToProps = state => ({
+    user: state.users
+  })
+  export default connect(
+    mapStateToProps
+  )(Login);

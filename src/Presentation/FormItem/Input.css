@@ -1,0 +1,11 @@
+.inputs {
+    text-align: center;
+    width: 10rem;
+    color: darkslategray;
+}
+.validationError {
+    color: darkred;
+}
+.inputs label {
+    display:inline-flex ;
+}
