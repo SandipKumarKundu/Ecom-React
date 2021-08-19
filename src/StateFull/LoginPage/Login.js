@@ -11,7 +11,8 @@ const Login= ({user,dispatch}) =>{
     let dynamicFormOutputCaller = new BehaviorSubject();
     dynamicFormOutputCaller.pipe(filter(data=>data)).subscribe(async data=>{
         try{
-        const user=await HttpInterceptor.post("/users",data);
+            const auth=btoa(`${data.userName}:${data.password}`);
+        const user=await HttpInterceptor.post("users",data,{Authorization:`Basic ${auth}`});
         await setUserState({
             userName:user.data.userName,
             password:user.data.password,
@@ -22,6 +23,7 @@ const Login= ({user,dispatch}) =>{
             gender:user.data.gender,
             DOB:user.data.DOB,
         })
+            window.localStorage.setItem("User",JSON.stringify(user.data));
         dispatch(registerUser(user.data));
         history.push('/');
         }

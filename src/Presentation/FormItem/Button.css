@@ -1,0 +1,28 @@
+button{
+    font-size: 14px;
+    text-align: center;
+    color: honeydew;
+    padding: 16px;
+    text-transform: uppercase;
+}
+.checkoutButton{
+    background-color: #ff9f00;
+    width: 10rem;
+
+}
+.addToCartButton{
+    background-color: #e5d013;
+    width: 10rem;
+}
+.quantity-container{
+    display: flex;
+    width: 20rem;
+    justify-content: space-around;
+}
+.plus-icon{
+    float: left;
+    background-color: olivedrab;
+}.minus-icon{
+    float: right;
+    background-color: olivedrab;
+}

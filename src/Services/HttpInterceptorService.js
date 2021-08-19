@@ -14,6 +14,7 @@ const HttpInterceptor={
              return await axios.get(constructedUrl, {headers: headers});
          }
          catch (e) {
+             // catchError(e);
              throw e;
          }
     },
@@ -26,7 +27,9 @@ const HttpInterceptor={
                  } else
                      constructedUrl += `?${keys}=${queryParam[keys]}`
              }
-             return await axios.post(constructedUrl,data, {headers: headers});
+             const response=await axios.post(constructedUrl,data, {headers: headers});
+             HttpInterceptor.handleRedirects(response);
+             return response;
          }
          catch (e) {
              throw e;
@@ -45,6 +48,11 @@ const HttpInterceptor={
          }
          catch (e) {
              throw e;
+         }
+    },
+    handleRedirects:async (response)=>{
+         if(response.request.responseURL.indexOf(baseUrl)<0){
+             window.location=response.request.responseURL+"login";
          }
     }
 }

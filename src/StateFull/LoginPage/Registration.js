@@ -36,6 +36,7 @@ const Register = props=>{
                 DOB:user.data.DOB,
             })
             dispatch(registerUser(user.data));
+            window.localStorage.setItem("User",JSON.stringify(user.data))
             history.push('/');
         }
         catch (e){

@@ -6,6 +6,12 @@
 .validationError {
     color: darkred;
 }
+.required {
+    color: darkred;
+}
+.selection{
+    min-width: 10rem;
+}
 .inputs label {
     display:inline-flex ;
 }

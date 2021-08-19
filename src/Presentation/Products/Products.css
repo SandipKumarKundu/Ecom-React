@@ -1,0 +1,20 @@
+.div-container{
+    background-color: azure;
+    color: darkslategray;
+    font-size: 1rem;
+    width: 20rem;
+    height: 24rem;
+}
+p{
+    font-family: Calibri;
+    font-style: oblique;
+}
+.priceDetails{
+    color: olive;
+}
+.sellerDetail{
+    color: peru;
+}
+.choiceDetails{
+    color: darkorchid;
+}

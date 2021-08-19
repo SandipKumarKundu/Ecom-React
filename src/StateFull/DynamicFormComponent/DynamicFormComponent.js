@@ -11,6 +11,7 @@ const DynamicForm= props =>{
     const [dynamicFormData,setDynamicFormData]=useState({});
     const [dynamicFormValid,setDynamicFormValid]=useState({});
     const [dynamicFormError,setDynamicFormError]=useState({});
+    const [dynamicFormRequired,setDynamicFormRequired]=useState({});
     const validatorSubject = new BehaviorSubject({});
     validatorSubject.pipe(
         tap(message=>console.log(`error message ${Object.keys(message).length}`)),
@@ -26,12 +27,25 @@ const DynamicForm= props =>{
     validityMap[message.name]=false
     await setDynamicFormValid(validityMap);
 })
+
+    async function buildRequiredMap() {
+        dynamicForm.input.map(inputs=> {
+            if (inputs.required) {
+                const requiredMap = dynamicFormRequired;
+                requiredMap[inputs.name] = true;
+                setDynamicFormRequired(requiredMap);
+            }
+        });
+    }
+
     useEffect(async ()=>{
         const {data}=await HttpInterceptor.get(`form/${props.formId}`);
         formDef=data;
+       await buildRequiredMap();
         await setDynamicForm(formDef);
         props.dispatch(registerForm(formDef));
     },[]);
+
     const onChange=async event=>{
         const {name,value}=event.target;
         let formData={...dynamicFormData};
@@ -57,8 +71,8 @@ const DynamicForm= props =>{
             {
 
                 dynamicForm.input?dynamicForm.input.map(inputs=>{
-                return (<Input key={inputs.name} type={inputs.type} value={dynamicFormData[inputs.name]} onChange={onChange} name={inputs.name}
-                title={inputs.title} validate={dynamicFormValid[inputs.name]} tunnel={validatorSubject}/>);
+                return (<Input key={inputs.name} required={inputs.required} type={inputs.type} value={dynamicFormData[inputs.name]} onChange={onChange} name={inputs.name}
+                title={inputs.title} validate={dynamicFormValid[inputs.name]} options={inputs?.options} tunnel={validatorSubject}/>);
             }):""
             }
 
